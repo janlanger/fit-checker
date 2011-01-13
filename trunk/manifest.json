@@ -1,6 +1,6 @@
 {
   "name": "FIT Checker",
-  "version": "0.6.2",
+  "version": "0.6.4",
   "description": "Extension pro studenty FIT ČVUT, které kontroluje aktuální stav hodnocení v předmětech",
   "icons": {
       "16": "media/img/icon-16.png",

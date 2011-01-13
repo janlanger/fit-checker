@@ -5,6 +5,7 @@ $.expr[':'].contentIs = function(el, idx, meta) {
 
 // Browser class instance variable
 var browser;
+var username;
 
 // Status functions - messages to user
 function hideStatus() {
@@ -176,8 +177,6 @@ function downloadByLocalStorage(username, allSubjects, i) {
 }
 
 function downloadData(detect) {
-    var username;
-
     var xhr = new XMLHttpRequest();
     xhr.open("GET", "https://edux.fit.cvut.cz/", true);
     xhr.onreadystatechange = function() {
@@ -202,6 +201,15 @@ function downloadData(detect) {
                 .replace(/.*\(([a-z0-9]*)\).*/, "$1");
             
             _gaq.push(['_trackEvent', username, 'chrome-request']);
+            var xhrM = new XMLHttpRequest();
+            xhrM.open("GET","/manifest.json", true);
+            xhrM.onreadystatechange = function() {
+                if (xhrM.readyState == 4) {
+                    var manifest = $.parseJSON(xhrM.responseText);
+                    _gaq.push(['_trackEvent', username, 'chrome-v' + manifest.version]);
+                }
+            };
+            xhrM.send();
             
             $("div#user").hide();
             $("div#user").text(username);
@@ -311,16 +319,7 @@ function synchronizeData() {
 
 var _gaq = _gaq || [];
 _gaq.push(['_setAccount', 'UA-325731-18']);
-var xhr = new XMLHttpRequest();
-xhr.open("GET","/manifest.json", true);
-xhr.onreadystatechange = function() {
-    if (xhr.readyState == 4) {
-        var manifest = $.parseJSON(xhr.responseText);
-        _gaq.push(['_trackEvent', username, 'chrome-v' + manifest.version]);
-        _gaq.push(['_trackPageview']);
-    }
-};
-xhr.send();
+_gaq.push(['_trackPageview']);
 
 (function() {
     var ga = document.createElement('script');
