@@ -96,38 +96,72 @@ function parseSubjectData(responseText) {
         subjCont = subjCont.replace(/(.*)<thead>.*<\/thead>(.*)/, "$1$2");
         subjCont = subjCont.replace(/(.*)<tr><td>login<\/td>.*<\/tr>(.*)/, "$1$2");
 
-        inclusion = subjCont.replace(
-            /.*<tr><td>zápočet<\/td><td[^>]*>([^<]*)<\/td><\/tr>.*/, "$1");
-        if (inclusion == 'Z' || inclusion == 'ANO') {
-            status = 'inclusion';
-        }
-        
-        mark = subjCont.replace(
-            /.*<tr><td>klasifikovaný zápočet<\/td><td[^>]*>([^<]*)<\/td><\/tr>.*/, "$1");
-        if (mark == 'A' || mark == 'B' || mark == 'C' || mark == 'D' ||
-            mark == 'E' || inclusion == 'A' || inclusion == 'B' ||
-            inclusion == 'C' || inclusion == 'D' || inclusion == 'E') {
-            status = 'succeed';
-        } else if (mark == 'F') {
-            status = 'failed';
-        }
-
-        // Get sum of all points
-        var i = 0;
-        var el;
-        sumOfPoints = null;
-        sumStrings = ['celkem', 'Celkem', 'suma', 'cvičení celkem', 'hodnoceni'];
-        for (i = 0; i < sumStrings.length; i++) {
-            el = $("td:contentIs('" + sumStrings[i] + "')", subjCont);
-            if (el.length > 0) {
-                sumOfPoints = el.next().text();
-                break;
-            }
-        }
         secondTable = $("div.overTable:eq(1)", responseText).html();
         if (secondTable != null) {
             secondTable = secondTable.replace(/(.*)<thead>.*<\/thead>(.*)/, "$1$2");
             subjCont += '<h2><span>Shrnutí</span></h2>' + secondTable;
+        }
+
+        // Inclusion
+        inclusionStrings = ['zápočet', 'zapocet', 'Zápočet',
+            'klasifikovaný zápočet', 'nárok na zápočet'];
+        inclusionValues= ['ANO', 'Ano', 'Z', '√'];
+        for (i = 0; i < inclusionStrings.length; i++) {
+            if (status == 'inclusion') {
+                break;
+            }
+            
+            el = $("td:contentIs('" + inclusionStrings[i] + "')", subjCont);
+            next = el.next('td');
+            
+            for (ii = 0; ii < next.length; ii++) {
+                if (next[ii].firstChild != null) {
+                    if ($.inArray(next[ii].firstChild.nodeValue, inclusionValues) != -1) {
+                        status = 'inclusion';
+                        break;
+                    }
+                }
+            }
+        }
+
+        // Mark
+        markStrings = ['klasifikovaný zápočet', 'vysledek', 'Známka',
+            'zápočet', 'Zápočet'];
+        greenValues = ['A', 'B', 'C', 'D', 'E'];
+        for (i = 0; i < markStrings.length; i++) {
+            el = $("td:contentIs('" + markStrings[i] + "')", subjCont);
+            if (el.length > 0) {
+                mark = el.next('td');
+
+                for (ii = 0; ii < mark.length; ii++) {
+                    if (mark[ii].firstChild != null) {
+                        realMark = mark[ii].firstChild.nodeValue;
+                        if ($.inArray(realMark, greenValues) != -1) {
+                            status = 'succeed';
+                            break;
+                        } else if (realMark == 'F') {
+                            status = 'failed';
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Get sum of all points
+        sumStrings = ['celkem', 'Celkem', 'suma', 'cvičení celkem', 'hodnoceni',
+            'celkový počet'];
+        for (i = 0; i < sumStrings.length; i++) {
+            el = $("td:contentIs('" + sumStrings[i] + "')", subjCont);
+            if (el.length > 0) {
+                next = el.next('td');
+                for (ii = 0; ii < next.length; ii++) {
+                    if (next[ii].firstChild != null) {
+                        sumOfPoints = next[ii].firstChild.nodeValue;
+                    }
+                }
+                break;
+            }
         }
     }
     
@@ -200,7 +234,6 @@ function downloadData(detect) {
             username = $("div.user", xhr.responseText).text()
                 .replace(/.*\(([a-z0-9]*)\).*/, "$1");
             
-            _gaq.push(['_trackEvent', username, 'chrome-request']);
             var xhrM = new XMLHttpRequest();
             xhrM.open("GET","/manifest.json", true);
             xhrM.onreadystatechange = function() {
