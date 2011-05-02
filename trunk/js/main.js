@@ -104,7 +104,7 @@ function parseSubjectData(responseText) {
 
         // Inclusion
         inclusionStrings = ['zápočet', 'zapocet', 'Zápočet',
-            'klasifikovaný zápočet', 'nárok na zápočet'];
+            'klasifikovaný zápočet', 'Záp.', 'Zapocet2', 'nárok na zápočet'];
         inclusionValues= ['ANO', 'Ano', 'Z', '√'];
         for (i = 0; i < inclusionStrings.length; i++) {
             if (status == 'inclusion') {
@@ -126,7 +126,7 @@ function parseSubjectData(responseText) {
 
         // Mark
         markStrings = ['klasifikovaný zápočet', 'vysledek', 'Známka',
-            'zápočet', 'Zápočet'];
+            'zápočet', 'Zápočet', 'Klasifikace'];
         greenValues = ['A', 'B', 'C', 'D', 'E'];
         for (i = 0; i < markStrings.length; i++) {
             el = $("td:contentIs('" + markStrings[i] + "')", subjCont);
@@ -150,7 +150,8 @@ function parseSubjectData(responseText) {
 
         // Get sum of all points
         sumStrings = ['celkem', 'Celkem', 'suma', 'cvičení celkem', 'hodnoceni',
-            'celkový počet'];
+            'celkový počet', 'cviceni_celkem', 'cviceni_celkem:', 'Suma2',
+            'Suma', 'Součet bodů'];
         for (i = 0; i < sumStrings.length; i++) {
             el = $("td:contentIs('" + sumStrings[i] + "')", subjCont);
             if (el.length > 0) {
