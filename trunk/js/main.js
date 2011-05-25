@@ -103,7 +103,7 @@ function parseSubjectData(responseText) {
         }
 
         // Inclusion
-        inclusionStrings = ['zápočet', 'zapocet', 'Zápočet',
+        inclusionStrings = ['zápočet', 'zapocet', 'Zápočet', 'Zapocet',
             'klasifikovaný zápočet', 'Záp.', 'Zapocet2', 'nárok na zápočet'];
         inclusionValues= ['ANO', 'Ano', 'Z', '√'];
         for (i = 0; i < inclusionStrings.length; i++) {
@@ -149,7 +149,7 @@ function parseSubjectData(responseText) {
         }
 
         // Get sum of all points
-        sumStrings = ['celkem', 'Celkem', 'suma', 'cvičení celkem', 'hodnoceni',
+        sumStrings = ['celkem', 'Celkem', 'suma', 'cvičení celkem', 'hodnoceni', 'Součet cvičení',
             'celkový počet', 'cviceni_celkem', 'cviceni_celkem:', 'Suma2',
             'Suma', 'Součet bodů'];
         for (i = 0; i < sumStrings.length; i++) {
