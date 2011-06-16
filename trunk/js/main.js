@@ -125,7 +125,7 @@ function parseSubjectData(responseText) {
         }
 
         // Mark
-        markStrings = ['klasifikovaný zápočet', 'vysledek', 'Známka',
+        markStrings = ['klasifikovaný zápočet', 'vysledek', 'Známka', 'Znamka' , 
             'zápočet', 'Zápočet', 'Klasifikace'];
         greenValues = ['A', 'B', 'C', 'D', 'E'];
         for (i = 0; i < markStrings.length; i++) {
