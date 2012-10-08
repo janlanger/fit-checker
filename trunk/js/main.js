@@ -88,6 +88,10 @@ function parseSubjectData(responseText) {
     sumOfPoints = null;
     
     subjectName = $("a.wikilink2", responseText).attr('href');
+    if(subjectName == undefined) {
+        //fallback - namespace exists?
+        subjectName = $("a.wikilink1", responseText).attr('href');
+    }
     subjectName = subjectName.replace(/\/courses\/([^\/]*)\/.*/, "$1");
     subjCont = $("div.overTable:eq(0)", responseText).html();
     
@@ -298,6 +302,9 @@ function downloadData(detect) {
 
 function getSubjectNames () {
     var savedSubjects = JSON.parse(localStorage.getItem('subjects'));
+    if(savedSubjects == null) {
+        savedSubjects = new Array
+    }
     var i = 1;
     var xhr = new XMLHttpRequest();
     xhr.open("GET", "https://edux.fit.cvut.cz/", true);
@@ -314,9 +321,10 @@ function getSubjectNames () {
                     ' id="' + $(this).text() + '" /> <label for="' +
                     $(this).text() + '">' + $(this).text() + '</label><br />');
                 if (index+1 == allSubjects.length) {
-                    $("fieldset").append('<br /><button type="submit" ' +
-                        'onclick="saveForm()">Ulo\u017Eit</button>');
+                    $("fieldset").append('<br /><button id="sender" type="submit" ' +
+                        '>Ulo\u017Eit</button>');
                     setStatus('Sta\u017Eeno', 'ok');
+                    $("#sender").click(function() {saveForm()});
                 }
                 i++;
             });

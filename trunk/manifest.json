@@ -1,4 +1,5 @@
 {
+    "manifest_version": 2,
   "name": "FIT Checker",
   "version": "0.6.5",
   "description": "Extension pro studenty FIT ČVUT, pro kontrolu aktuálního stavu hodnocení v předmětech",
@@ -13,6 +14,7 @@
     "default_title": "FIT Checker",
     "default_popup": "popup.html"
   },
+  "content_security_policy": "script-src 'self' https://*.googleapis.com; object-src 'self'",
 
   "options_page": "settings.html",
   "permissions": [
